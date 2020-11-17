@@ -1,283 +1,158 @@
 #include<stdio.h>
-
 #include<stdlib.h>
-
-
+#define ARRAYSIZE 25
 
 int getSeed();
-
 int getLargest();
-
-void fetchRandomNumbers(int *,int,int);
-
-void printArray(int *,int); // to print arrays to test or debug 
-
-int segregateEvenOdd(int *,int );
-
-void sortArray(int *,int,int);
-
-void displayresults(int *,int size);
-
-
+void fetchRandomNumbers(int*, int);
+int segregateEvenOdd(int*);
+void sortArray(int*, int, int);
+void displayresults(int*);
 
 int main()
-
 {
-
     //Local Declarations
-
     int seed; // value of seed
+    int largestVal; // largest value
+    int randomNumbers[ARRAYSIZE]; // random numbers array
+    int partition; // count of seperation
 
-    int largestVal; // largest value 
-
-    int size = 25;
-
-
-
-    // accepting inputs
-
+    // Executable Statements
     seed = getSeed();
-
     largestVal = getLargest();
-
-
-
-    // Executive Statements
-
-    //seeding random values
-
     srand(seed);
+    fetchRandomNumbers(randomNumbers, largestVal);
+    partition = partition = segregateEvenOdd(randomNumbers);
+    sortArray(randomNumbers, 0, partition - 1);
+    sortArray(randomNumbers, partition, ARRAYSIZE - 1);
+    displayresults(randomNumbers);
 
-    
-
-    // random numbers array
-
-    int randomNumbers[size];
-
-    // populating random numbers arrays with data
-
-    fetchRandomNumbers(randomNumbers,size,largestVal);
-
-    
-
-    // segregating evens and odds
-
-    int partition = segregateEvenOdd(randomNumbers,size);
-
-    
-
-    
-
-    //now we got the arrays partitioned odd/even from [0,p-1] and even/odd from [p,size-1]
-
-    // sorting first half of the array
-
-    sortArray(randomNumbers,0,partition-1);
-
-    // sorting second half of the array
-
-    sortArray(randomNumbers,partition,size-1);
-
-    
-
-    
-
-    // printing dataset in desired order;
-
-    displayresults(randomNumbers,size);
-
+    return 0;
 }
-
-
 
 int getSeed()
-
 {
-
-    //Local Declarations
-
+    // Local Declarations
     int seedValue; // temporary storage of seed value
 
-
-
-    //Excutable Statements
-
+    // Executable Statements 
     printf("Enter seed value -> ");
-
     scanf("%d", &seedValue);
-
-
-
-    // Loop until valid input is not given
-
     while (seedValue < 1)
-
     {
-
-     printf("\nError! Seed must be a positive value!\n");
-
-     printf("\nEnter seed value -> ");
-
-     scanf("%d", &seedValue);
-
+        printf("\nError! Seed must be a positive value!\n");
+        printf("\nEnter seed value -> ");
+        scanf("%d", &seedValue);
     }
-
     return seedValue;
-
 }
 
-
-
 int getLargest()
-
 {
-
     // Local Declarations
-
     int largestVal; // temporary storage of largest value
-
-
 
     // Executable Statements
 
     printf("Enter largest value to generate -> ");
-
     scanf("%d", &largestVal);
-
-
-
-    // Loop until 
-
     while (largestVal < 2)
-
     {
-
         printf("\nError! Largest value to generate must be at least two!\n");
-
         printf("\nEnter largest value to generate -> ");
-
         scanf("%d", &largestVal);
-
     }
 
     return largestVal;
-
 }
 
-
-
-void printArray(int *array,int size){
-
-    for(int i=0;i<size;i++){
-
-        printf("%d ",array[i]);
-
-    }
-
-    printf("\n");
-
-}
-
-
-
-int generateRandom(int upper){
-
-    int lower = 1;
+int generateRandom(int upper)
+{
+    // Local Declarations
+    int lower = 1; // lower bound
 
     return (rand() % (upper - lower + 1)) + lower;
-
 }
 
-
-
-
-
-void fetchRandomNumbers(int *numbers,int size,int upper){
-
-    for(int i=0;i<size;i++){
-
-        numbers[i] = generateRandom(upper);
-
-    }
-
-}
-
-
-
-void swap(int *first,int *second){
-
-    int temp = *first;
-
-    *first = *second;
-
-    *second = temp;
-
-}
-
-
-
-int segregateEvenOdd(int *array,int size){
-
-    // flag decides which among even and odd will come first
-
-    int flag = array[0]%2;
-
-    int count = 0;
-
-    for(int i=0;i<size;i++){
-
-        if (( flag!=0 && array[i]%2!=0) ||( flag==0 && array[i]%2!=0) ){
-
-            swap(&array[count],&array[i]);
-
-            count++;
-
-        }
-
-    }
-
-    return count;
-
-}
-
-
-
-void sortArray(int *array,int start,int end){
-
-    for(int i=start;i<=end;i++){
-
-        for(int j=start;j<end;j++){
-
-            if(array[j]>array[j+1]){
-
-                swap(&array[j],&array[j+1]);
-
-            }
-
-        }
-
-    }
-
-}
-
-
-
-void displayresults(int *array,int size)
-
+void fetchRandomNumbers(int* numbers, int upper)
 {
+    //Local Declarations
+    int i; //loop control variable
 
-    printf("Data set in desired order: ");
+     //Executable Statements
+    for (i = 0; i < ARRAYSIZE; i++)
+    {
+        numbers[i] = generateRandom(upper);
+    }
+}
 
-    printf("%d ",array[0]);
+void swap(int* first, int* second)
+{
+    //Local Declarations
+    int temp = *first; // temporary variable storage
 
-    for(int i=1;i<size;i++){
+    // Executable Statements
+    *first = *second;
+    *second = temp;
+}
 
-        if(array[i]!=array[i-1]){
+int segregateEvenOdd(int* array)
+{
+    //Local Declarations
+    int flag = array[0] % 2; // odd or even determination
+    int count = 0; // count of numbers
+    int i; // loop control variable
 
-            printf("%d ",array[i]);
-
+    //Executable Statements
+    for (i = 0; i < ARRAYSIZE; i++)
+    {
+        if (flag != 0 && array[i] % 2 != 0)
+        {
+            swap(&array[count], &array[i]);
+            count++;
         }
+    }
+    if (flag == 0 && array[i] % 2 == 0)
+    {
+        swap(&array[i], &array[count]);
+        count++;
+    }
+    return count;
+}
 
+void sortArray(int* array, int start, int end)
+  {
+     //Local Declarations
+     int i; //outer loop control variable
+     int j; //inner loop control variable
+    
+      //Executable Statements
+       for (i = start; i <= end; i++)
+          {
+            for (j = start; j < end; j++)
+               {
+                 if (array[j] > array[j + 1])
+                    {
+                          swap(&array[j], &array[j + 1]);
+                    }
+               }
+           }
     }
 
-}
+void displayresults(int* array)
+  {
+       //Local Declarations
+       int i; //loop control variable
+    
+            //Executable Statements
+           printf("\nData set in desired order: ");
+        printf("%d ", array[0]);
+        for (i = 1; i < ARRAYSIZE; i++)
+            {
+              if (array[i] != array[i - 1])
+                {
+                 printf("%d ", array[i]);
+                 }
+            }
+        printf("\n");
+      }
